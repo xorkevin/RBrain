@@ -1,21 +1,26 @@
 use std::ops;
 
 
-struct M<T: Clone + ops::Add + ops::Mul> {
+///# Matrix
+struct M<T> {
     dim: (usize, usize),
-    data: Vec<Vec<T>>,
+    data: V<V<T>>,
 }
 
-impl <T: Clone + ops::Add + ops::Mul> M<T>  {
-    fn new(x: usize, y: usize, z: T) -> Self {
+impl <T> M<T>  {
+    fn new(x: usize, y: usize, z: V<V<T>>) -> Self {
         M {
             dim: (x, y),
-            data: vec![vec![z; y]; x],
+            data: z,
         }
+    }
+
+    fn defaultNew(x: usize, y: usize, z: T) -> Self {
+        M::new(x, y, V::new(vec![V::new(vec![z; y]); x]))
     }
 }
 
-impl <T: Clone + ops::Add + ops::Mul> ops::Add for M<T> {
+impl <T: ops::Add> ops::Add for M<T> {
     type Output = Self;
 
     fn add(self, rhs: Self) -> Self {
@@ -23,7 +28,15 @@ impl <T: Clone + ops::Add + ops::Mul> ops::Add for M<T> {
     }
 }
 
-impl <T: Clone + ops::Add + ops::Mul> ops::Mul for M<T> {
+impl <T: ops::Sub> ops::Sub for M<T> {
+    type Output = Self;
+
+    fn sub(self, rhs: Self) -> Self {
+
+    }
+}
+
+impl <T: ops::Mul + ops::Add> ops::Mul for M<T> {
     type Output = Self;
 
     fn mul(self, rhs: Self) -> Self {
@@ -31,13 +44,60 @@ impl <T: Clone + ops::Add + ops::Mul> ops::Mul for M<T> {
     }
 }
 
+impl <T: ops::Neg> ops::Neg for M<T> {
+    type Output = Self;
 
-struct V<T>(Vec<T>);
+    fn neg(self) -> Self {
 
-impl<T: Clone + ops::Add + ops::Mul> ops::Mul for V<T> {
+    }
+}
+
+
+///# Vector
+struct V<T> {
+    data: Vec<T>,
+}
+
+impl <T> V<T> {
+    fn new(z: Vec<T>) -> Self {
+        V {
+            data: z,
+        }
+    }
+
+    fn len(self) -> usize {
+        self.data.len()
+    }
+}
+
+impl<T: ops::Add> ops::Add for V<T> {
+    type Output = T;
+
+    fn add(self, rhs: Self) -> T {
+
+    }
+}
+
+impl<T: ops::Sub> ops::Sub for V<T> {
+    type Output = T;
+
+    fn sub(self, rhs: Self) -> T {
+
+    }
+}
+
+impl<T: ops::Mul + ops::Add> ops::Mul for V<T> {
     type Output = T;
 
     fn mul(self, rhs: Self) -> T {
-        self.0.iter().zip(rhs.0.iter()).map(|(x, y)| x*y).sum();
+        self.data.iter().zip(rhs.data.iter()).map(|(x, y)| *x**y).sum();
+    }
+}
+
+impl <T: ops::Neg> ops::Neg for V<T> {
+    type Output = Self;
+
+    fn neg(self) -> Self {
+
     }
 }
