@@ -7,7 +7,7 @@ struct M<T> {
     data: V<V<T>>,
 }
 
-impl <T> M<T>  {
+impl <T: Clone> M<T>  {
     fn new(x: usize, y: usize, z: V<V<T>>) -> Self {
         M {
             dim: (x, y),
@@ -20,40 +20,41 @@ impl <T> M<T>  {
     }
 }
 
-impl <T: ops::Add> ops::Add for M<T> {
-    type Output = Self;
-
-    fn add(self, rhs: Self) -> Self {
-
-    }
-}
-
-impl <T: ops::Sub> ops::Sub for M<T> {
-    type Output = Self;
-
-    fn sub(self, rhs: Self) -> Self {
-
-    }
-}
-
-impl <T: ops::Mul + ops::Add> ops::Mul for M<T> {
-    type Output = Self;
-
-    fn mul(self, rhs: Self) -> Self {
-
-    }
-}
-
-impl <T: ops::Neg> ops::Neg for M<T> {
-    type Output = Self;
-
-    fn neg(self) -> Self {
-
-    }
-}
+// impl <T: ops::Add> ops::Add for M<T> {
+//     type Output = Self;
+//
+//     fn add(self, rhs: Self) -> Self {
+//
+//     }
+// }
+//
+// impl <T: ops::Sub> ops::Sub for M<T> {
+//     type Output = Self;
+//
+//     fn sub(self, rhs: Self) -> Self {
+//
+//     }
+// }
+//
+// impl <T: ops::Mul + ops::Add> ops::Mul for M<T> {
+//     type Output = Self;
+//
+//     fn mul(self, rhs: Self) -> Self {
+//
+//     }
+// }
+//
+// impl <T: ops::Neg> ops::Neg for M<T> {
+//     type Output = Self;
+//
+//     fn neg(self) -> Self {
+//
+//     }
+// }
 
 
 ///# Vector
+#[derive(Clone)]
 struct V<T> {
     data: Vec<T>,
 }
@@ -70,34 +71,40 @@ impl <T> V<T> {
     }
 }
 
-impl<T: ops::Add> ops::Add for V<T> {
-    type Output = T;
+// impl<T: ops::Add> ops::Add for V<T> {
+//     type Output = T;
+//
+//     fn add(self, rhs: Self) -> T {
+//
+//     }
+// }
+//
+// impl<T: ops::Sub> ops::Sub for V<T> {
+//     type Output = T;
+//
+//     fn sub(self, rhs: Self) -> T {
+//
+//     }
+// }
 
-    fn add(self, rhs: Self) -> T {
-
-    }
-}
-
-impl<T: ops::Sub> ops::Sub for V<T> {
-    type Output = T;
-
-    fn sub(self, rhs: Self) -> T {
-
-    }
-}
-
-impl<T: ops::Mul + ops::Add> ops::Mul for V<T> {
+impl<T: ops::Mul<Output=T> + ops::Add<Output=T> + Zero + Clone> ops::Mul for V<T> {
     type Output = T;
 
     fn mul(self, rhs: Self) -> T {
-        self.data.iter().zip(rhs.data.iter()).map(|(x, y)| *x**y).sum();
+        self.data.iter().zip(rhs.data.iter()).fold(T::zero(), |sum, (x, y)| x.clone()*y.clone()+sum) // clone works but should work on dereferencing 
     }
 }
 
-impl <T: ops::Neg> ops::Neg for V<T> {
-    type Output = Self;
+// impl <T: ops::Neg> ops::Neg for V<T> {
+//     type Output = Self;
+//
+//     fn neg(self) -> Self {
+//
+//     }
+// }
 
-    fn neg(self) -> Self {
 
-    }
+///# Zero Trait
+trait Zero{
+    fn zero() -> Self;
 }
