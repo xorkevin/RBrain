@@ -2,6 +2,7 @@ use std::ops;
 
 
 ///# Matrix
+#[derive(Clone)]
 struct M<T> {
     dim: (usize, usize),
     data: V<V<T>>,
@@ -18,6 +19,24 @@ impl <T: Clone> M<T>  {
     fn default_new(x: usize, y: usize, z: T) -> Self {
         M::new(x, y, V::new(vec![V::new(vec![z; y]); x]))
     }
+
+    fn transpose(self) -> M<T> {
+        let mut rows: Vec<V<T>> = Vec::with_capacity(self.dim.1);
+        for i in 0..self.dim.1 {
+            let mut cols: Vec<T> = Vec::with_capacity(self.dim.0);
+            for j in 0..self.dim.0 {
+                cols.push(self.data.0[j].0[i].clone());
+            }
+            rows.push(V(cols));
+        }
+        M::new(self.dim.1, self.dim.0, V(rows))
+    }
+}
+
+impl <T: ops::Mul<Output=T> + Clone> M<T> {
+    // fn inner(self, rhs: Self) -> M<T> {
+    //
+    // }
 }
 
 // impl <T: ops::Add> ops::Add for M<T> {
@@ -64,6 +83,12 @@ impl <T> V<T> {
 
     fn len(self) -> usize {
         self.0.len()
+    }
+}
+
+impl <T: ops::Mul<Output=T> + Clone> V<T> {
+    fn inner(self, rhs: Self) -> V<T> {
+        V(self.0.iter().zip(rhs.0.iter()).map(|(x, y)| x.clone() * y.clone()).collect())
     }
 }
 
