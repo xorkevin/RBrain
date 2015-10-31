@@ -1,6 +1,3 @@
-#[allow(non_snake_case)]
-#[allow(dead_code)]
-
 use std::ops;
 
 
@@ -94,9 +91,9 @@ impl<T: ops::Mul<Output=T> + ops::Add<Output=T> + Clone> ops::Mul for V<T> {
     type Output = T;
 
     fn mul(self, rhs: Self) -> T {
-        let dataIter = self.data.iter().zip(rhs.data.iter()).skip(1);
+        let data_iter = self.data.iter().zip(rhs.data.iter()).skip(1);
         let first = self.data[0].clone() * rhs.data[0].clone();
-        dataIter.fold(first, |sum, (x, y)| x.clone()*y.clone()+sum)
+        data_iter.fold(first, |sum, (x, y)| x.clone()*y.clone()+sum)
     }
 }
 
