@@ -15,7 +15,7 @@ impl <T: Clone> M<T>  {
         }
     }
 
-    fn defaultNew(x: usize, y: usize, z: T) -> Self {
+    fn default_new(x: usize, y: usize, z: T) -> Self {
         M::new(x, y, V::new(vec![V::new(vec![z; y]); x]))
     }
 }
@@ -55,19 +55,15 @@ impl <T: Clone> M<T>  {
 
 ///# Vector
 #[derive(Clone)]
-struct V<T> {
-    data: Vec<T>,
-}
+struct V<T>(Vec<T>);
 
 impl <T> V<T> {
     fn new(z: Vec<T>) -> Self {
-        V {
-            data: z,
-        }
+        V(z)
     }
 
     fn len(self) -> usize {
-        self.data.len()
+        self.0.len()
     }
 }
 
@@ -91,8 +87,8 @@ impl<T: ops::Mul<Output=T> + ops::Add<Output=T> + Clone> ops::Mul for V<T> {
     type Output = T;
 
     fn mul(self, rhs: Self) -> T {
-        let data_iter = self.data.iter().zip(rhs.data.iter()).skip(1);
-        let first = self.data[0].clone() * rhs.data[0].clone();
+        let data_iter = self.0.iter().zip(rhs.0.iter()).skip(1);
+        let first = self.0[0].clone() * rhs.0[0].clone();
         data_iter.fold(first, |sum, (x, y)| x.clone()*y.clone()+sum)
     }
 }
