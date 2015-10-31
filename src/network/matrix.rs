@@ -1,3 +1,6 @@
+#[allow(non_snake_case)]
+#[allow(dead_code)]
+
 use std::ops;
 
 
@@ -87,11 +90,13 @@ impl <T> V<T> {
 //     }
 // }
 
-impl<T: ops::Mul<Output=T> + ops::Add<Output=T> + Zero + Clone> ops::Mul for V<T> {
+impl<T: ops::Mul<Output=T> + ops::Add<Output=T> + Clone> ops::Mul for V<T> {
     type Output = T;
 
     fn mul(self, rhs: Self) -> T {
-        self.data.iter().zip(rhs.data.iter()).fold(T::zero(), |sum, (x, y)| x.clone()*y.clone()+sum) // clone works but should work on dereferencing 
+        let dataIter = self.data.iter().zip(rhs.data.iter()).skip(1);
+        let first = self.data[0].clone() * rhs.data[0].clone();
+        dataIter.fold(first, |sum, (x, y)| x.clone()*y.clone()+sum)
     }
 }
 
@@ -102,9 +107,3 @@ impl<T: ops::Mul<Output=T> + ops::Add<Output=T> + Zero + Clone> ops::Mul for V<T
 //
 //     }
 // }
-
-
-///# Zero Trait
-trait Zero{
-    fn zero() -> Self;
-}
