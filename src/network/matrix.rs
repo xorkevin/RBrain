@@ -67,21 +67,21 @@ impl <T> V<T> {
     }
 }
 
-// impl<T: ops::Add> ops::Add for V<T> {
-//     type Output = T;
-//
-//     fn add(self, rhs: Self) -> T {
-//
-//     }
-// }
-//
-// impl<T: ops::Sub> ops::Sub for V<T> {
-//     type Output = T;
-//
-//     fn sub(self, rhs: Self) -> T {
-//
-//     }
-// }
+impl<T: ops::Add<Output=T> + Clone> ops::Add for V<T> {
+    type Output = V<T>;
+
+    fn add(self, rhs: Self) -> V<T> {
+        V(self.0.iter().zip(rhs.0.iter()).map(|(x, y)| x.clone() + y.clone()).collect())
+    }
+}
+
+impl<T: ops::Sub<Output=T> + Clone> ops::Sub for V<T> {
+    type Output = V<T>;
+
+    fn sub(self, rhs: Self) -> V<T> {
+        V(self.0.iter().zip(rhs.0.iter()).map(|(x, y)| x.clone() - y.clone()).collect())
+    }
+}
 
 impl<T: ops::Mul<Output=T> + ops::Add<Output=T> + Clone> ops::Mul for V<T> {
     type Output = T;
@@ -93,10 +93,10 @@ impl<T: ops::Mul<Output=T> + ops::Add<Output=T> + Clone> ops::Mul for V<T> {
     }
 }
 
-// impl <T: ops::Neg> ops::Neg for V<T> {
-//     type Output = Self;
-//
-//     fn neg(self) -> Self {
-//
-//     }
-// }
+impl <T: ops::Neg<Output=T> + Clone> ops::Neg for V<T> {
+    type Output = Self;
+
+    fn neg(self) -> Self {
+        V(self.0.iter().map(|x| -x.clone()).collect())
+    }
+}
